@@ -20,7 +20,14 @@
 
 'use strict';
 
-require('./external/shelljs/make');
+try {
+  require('shelljs/make');
+} catch (e) {
+  console.log('ShellJS is not installed. Run "npm install" to install ' +
+              'all dependencies.');
+  return;
+}
+
 var builder = require('./external/builder/builder.js');
 var crlfchecker = require('./external/crlfchecker/crlfchecker.js');
 var path = require('path');
@@ -1101,7 +1108,7 @@ target.chromium = function() {
 
   if (!test('-f', browserManifest)) {
     echo('Browser manifest file ' + browserManifest + ' does not exist.');
-    echo('Try copying one of the examples in test/resources/browser_manifests');
+    echo('Copy and adjust the example in test/resources/browser_manifests.');
     exit(1);
   }
 
@@ -1189,7 +1196,7 @@ target.browsertest = function(options) {
 
   if (!test('-f', 'test/' + PDF_BROWSERS)) {
     echo('Browser manifest file test/' + PDF_BROWSERS + ' does not exist.');
-    echo('Copy one of the examples in test/resources/browser_manifests/');
+    echo('Copy and adjust the example in test/resources/browser_manifests.');
     exit(1);
   }
 
@@ -1213,7 +1220,7 @@ target.unittest = function(options, callback) {
 
   if (!test('-f', 'test/' + PDF_BROWSERS)) {
     echo('Browser manifest file test/' + PDF_BROWSERS + ' does not exist.');
-    echo('Copy one of the examples in test/resources/browser_manifests/');
+    echo('Copy and adjust the example in test/resources/browser_manifests.');
     exit(1);
   }
   callback = callback || function() {};
@@ -1235,7 +1242,7 @@ target.fonttest = function(options, callback) {
 
   if (!test('-f', 'test/' + PDF_BROWSERS)) {
     echo('Browser manifest file test/' + PDF_BROWSERS + ' does not exist.');
-    echo('Copy one of the examples in test/resources/browser_manifests/');
+    echo('Copy and adjust the example in test/resources/browser_manifests.');
     exit(1);
   }
   callback = callback || function() {};
@@ -1258,7 +1265,7 @@ target.botmakeref = function() {
 
   if (!test('-f', 'test/' + PDF_BROWSERS)) {
     echo('Browser manifest file test/' + PDF_BROWSERS + ' does not exist.');
-    echo('Copy one of the examples in test/resources/browser_manifests/');
+    echo('Copy and adjust the example in test/resources/browser_manifests.');
     exit(1);
   }
 
@@ -1457,10 +1464,6 @@ target.lint = function() {
   echo('### Linting JS files');
 
   var jshintPath = path.normalize('./node_modules/.bin/jshint');
-  if (!test('-f', jshintPath)) {
-    echo('jshint is not installed -- installing...');
-    exec('npm install jshint@2.4.x'); // TODO read version from package.json
-  }
   // Lint the Firefox specific *.jsm files.
   var options = '--extra-ext .jsm';
 
